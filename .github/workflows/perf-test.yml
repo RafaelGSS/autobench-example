@@ -9,6 +9,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: actions-ecosystem/action-add-labels@v1
-        github_token: ${{ secrets.GITHUB_TOKEN }}
         with:
           labels: performance-benchmark
+          github_token: ${{ secrets.GITHUB_TOKEN }}
