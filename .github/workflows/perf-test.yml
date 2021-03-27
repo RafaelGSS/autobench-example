@@ -10,5 +10,5 @@ jobs:
 
       - uses: actions-ecosystem/action-add-labels@v1
         with:
-          labels: performance-benchmark
+          labels: perf-in-progress
           github_token: ${{ secrets.GITHUB_TOKEN }}
