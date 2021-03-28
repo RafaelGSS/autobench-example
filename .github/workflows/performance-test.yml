@@ -1,0 +1,52 @@
+name: Performance Benchmark
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  deploy:
+    if: ${{ github.event.label.name == 'performance' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: perf-in-progress
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find Pull Request
+        uses: juliangruber/find-pull-request-action@v1
+        id: find-pull-request
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build container image
+        run: docker build -t rafaelgss/public:autobench-example-${{ steps.find-pull-request.outputs.number }} .
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: rafaelgss
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push image to Docker Hub
+        run: docker push rafaelgss/public:autobench-example-${{ steps.find-pull-request.outputs.number }}
+
+      - name: Benchmark
+        uses: appleboy/ssh-action@master
+        env:
+          IMAGE: rafaelgss/public:autobench-example-${{ steps.find-pull-request-outputs.number }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          envs: IMAGE
+          script: |
+            docker pull $IMAGE
+            docker run --name $IMAGE -it -t $IMAGE -- npm run bench:compare;
+
+      - uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: perf-in-progress
+          github_token: ${{ secrets.GITHUB_TOKEN }}
