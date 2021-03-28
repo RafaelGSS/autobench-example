@@ -4,7 +4,7 @@ on:
     types: [labeled]
 
 jobs:
-  deploy:
+  benchmark:
     if: ${{ github.event.label.name == 'performance' }}
     runs-on: ubuntu-latest
     steps:
