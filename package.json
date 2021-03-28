@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "concurrently": "^6.0.0",
     "fastify": "^3.14.0"
   },
   "devDependencies": {
-    "autobench": "^0.1.0"
+    "autobench": "^0.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "bench-ci:compare": "concurrently \"npm start\" \"npm run bench:compare\"",
     "bench:compare": "autobench compare",
     "bench:create": "autobench create"
   },
