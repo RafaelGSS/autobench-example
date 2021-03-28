@@ -35,18 +35,19 @@ jobs:
 
       - name: Benchmark
         uses: appleboy/ssh-action@master
-        env:
-          IMAGE: ${{ env.IMAGE_NAME }}
+        continue-on-error: true
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          envs: IMAGE
+          envs: IMAGE_NAME
           script: |
             docker pull $IMAGE
             docker run --name $IMAGE -t $IMAGE npm run bench-ci:compare;
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
-          labels: perf-in-progress
+          labels: |
+            perf-in-progress
+            performance
           github_token: ${{ secrets.GITHUB_TOKEN }}
