@@ -36,14 +36,16 @@ jobs:
       - name: Benchmark
         uses: appleboy/ssh-action@master
         continue-on-error: true
+        env:
+          PR_NUMBER: ${{ steps.find-pull-request.outputs.number }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          envs: IMAGE_NAME
+          envs: PR_NUMBER
           script: |
             docker pull $IMAGE
-            docker run --name $IMAGE -t $IMAGE npm run bench-ci:compare;
+            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER npm run bench-ci:compare;
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
