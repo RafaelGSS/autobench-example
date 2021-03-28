@@ -44,7 +44,7 @@ jobs:
           envs: IMAGE
           script: |
             docker pull $IMAGE
-            docker run --name $IMAGE -it -t $IMAGE -- npm run bench:compare;
+            docker run --name $IMAGE -t $IMAGE npm run bench-ci:compare;
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
