@@ -31,12 +31,12 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push image to Docker Hub
-        run: docker push rafaelgss/public:autobench-example-${{ steps.find-pull-request.outputs.number }}
+        run: export IMAGE_NAME=rafaelgss/public:autobench-example-${{ steps.find-pull-request.outputs.number }}; docker push $IMAGE_NAME
 
       - name: Benchmark
         uses: appleboy/ssh-action@master
         env:
-          IMAGE: rafaelgss/public:autobench-example-${{ steps.find-pull-request-outputs.number }}
+          IMAGE: ${{ env.IMAGE_NAME }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
