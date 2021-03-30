@@ -1,5 +1,5 @@
 const Fastify = require('fastify')
-const fastify = Fastify({ logger: NODE_ENV === 'development' })
+const fastify = Fastify({ logger: process.env.NODE_ENV === 'development' })
 
 async function slowPromise() {
   const rand = Math.random() * 1000
