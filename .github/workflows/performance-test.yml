@@ -35,6 +35,7 @@ jobs:
 
       - name: Benchmark
         uses: appleboy/ssh-action@master
+        id: benchmark
         continue-on-error: true
         env:
           PR_NUMBER: ${{ steps.find-pull-request.outputs.number }}
