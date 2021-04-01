@@ -49,9 +49,13 @@ jobs:
             docker pull rafaelgss/public:autobench-example-$PR_NUMBER
             docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER echo "::set-output name=review::$(ls -la)";
 
-      - run: echo "Pull Request ${review}"
+      - run: echo "::set-output name=example::test"
+        id: example
+
+      - run: echo "Pull Request ${review} ${example}"
         env:
-          review: ${{ steps.benchmark.outputs.review }}
+          review: ${{join(steps.benchmark.outputs.*, '\n')}}
+          example: ${{join(steps.example.outputs.*, '\n')}}
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
