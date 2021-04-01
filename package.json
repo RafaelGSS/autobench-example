@@ -13,7 +13,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "bench-ci:compare": "concurrently \"npm start\" \"npm run bench:compare\"",
+    "bench-ci:compare": "concurrently --kill-others \"npm start\" \"npm run bench:compare\"",
     "bench:compare": "autobench compare",
     "bench:create": "autobench create"
   },
