@@ -44,7 +44,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           envs: PR_NUMBER
           script: |
-            docker pull $IMAGE
+            docker pull rafaelgss/public:autobench-example-$PR_NUMBER
             docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER echo "::set-output name=review::$(npm run bench-ci:compare && cat ./autobench-readme.md)";
 
       - run: echo "Pull Request ${review}"
