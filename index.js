@@ -1,6 +1,11 @@
 const Fastify = require('fastify')
 const fastify = Fastify({ logger: process.env.NODE_ENV === 'development' })
 
+process.on('SIGTERM', () => {
+  fastify.close()
+  process.exit(0)
+})
+
 async function slowPromise() {
   const rand = 1000
   await new Promise((resolve) => setTimeout(resolve, rand))

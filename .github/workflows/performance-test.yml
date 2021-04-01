@@ -45,11 +45,11 @@ jobs:
           envs: PR_NUMBER
           script: |
             docker pull rafaelgss/public:autobench-example-$PR_NUMBER
-            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER echo "::set-output name=review::$(npm run bench-ci:compare && cat ./autobench-readme.md)";
+            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER echo "::set-output name=review::$(ls -la)";
 
       - run: echo "Pull Request ${review}"
         env:
-          review: ${{ steps.benchmark.outputs.number }}
+          review: ${{ steps.benchmark.outputs.review }}
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
