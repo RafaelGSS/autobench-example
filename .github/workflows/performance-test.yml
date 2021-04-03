@@ -34,28 +34,19 @@ jobs:
         run: export IMAGE_NAME=rafaelgss/public:autobench-example-${{ steps.find-pull-request.outputs.number }}; docker push $IMAGE_NAME
 
       - name: Benchmark
-        uses: appleboy/ssh-action@master
-        id: benchmark
+        uses: rafaelgss/github-action-ssh@master
         continue-on-error: true
         env:
           PR_NUMBER: ${{ steps.find-pull-request.outputs.number }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          passphrase: ${{ secrets.SSH_PASSWORD }}
           envs: PR_NUMBER
-          script: |
+          command: |
             docker rm autobench-example-$PR_NUMBER || true
             docker pull rafaelgss/public:autobench-example-$PR_NUMBER
-            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER echo "::set-output name=review::$(ls -la)";
-
-      - run: echo "::set-output name=example::test"
-        id: example
-
-      - run: echo "Pull Request ${review} ${example}"
-        env:
-          review: ${{join(steps.benchmark.outputs.*, '\n')}}
-          example: ${{join(steps.example.outputs.*, '\n')}}
+            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER npm run bench-ci:compare
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
