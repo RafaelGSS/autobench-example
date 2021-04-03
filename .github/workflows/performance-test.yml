@@ -41,8 +41,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          passphrase: ${{ secrets.SSH_PASSWORD }}
-          envs: PR_NUMBER
+          password: ${{ secrets.SSH_PASSWORD }}
           command: |
             docker rm autobench-example-$PR_NUMBER || true
             docker pull rafaelgss/public:autobench-example-$PR_NUMBER
