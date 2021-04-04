@@ -35,6 +35,7 @@ jobs:
 
       - name: Benchmark
         uses: rafaelgss/github-action-ssh@master
+        id: benchmark
         continue-on-error: true
         env:
           PR_NUMBER: ${{ steps.find-pull-request.outputs.number }}
@@ -47,6 +48,11 @@ jobs:
             docker pull rafaelgss/public:autobench-example-$PR_NUMBER;
             docker rm autobench-example-$PR_NUMBER 2> /dev/null || true;
             docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER npm run bench-ci:compare;
+
+      - name: Read last command
+        env:
+          CMD: ${{ steps.benchmark.outputs.cmd-3 }}
+        run: echo $CMD
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
