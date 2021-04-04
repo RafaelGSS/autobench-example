@@ -45,7 +45,7 @@ jobs:
           envs: PR_NUMBER
           command: |
             docker pull rafaelgss/public:autobench-example-$PR_NUMBER;
-            docker rm autobench-example-$PR_NUMBER 2> /dev/null;
+            docker rm autobench-example-$PR_NUMBER 2> /dev/null || true;
             docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER npm run bench-ci:compare;
 
       - uses: actions-ecosystem/action-remove-labels@v1
