@@ -44,9 +44,11 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           envs: PR_NUMBER
           command: |
-            docker rm autobench-example-$PR_NUMBER || true
-            docker pull rafaelgss/public:autobench-example-$PR_NUMBER
-            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER npm run bench-ci:compare
+            echo $PR_NUMBER;
+            env;
+            docker rm autobench-example-$PR_NUMBER || true;
+            docker pull rafaelgss/public:autobench-example-$PR_NUMBER;
+            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER npm run bench-ci:compare;
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
