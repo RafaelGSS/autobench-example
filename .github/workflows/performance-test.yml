@@ -57,6 +57,14 @@ jobs:
           event: REQUEST_CHANGES
           body: ${{ steps.benchmark.outputs.cmd-3 }}
 
+      - name: Approve changes
+        if: steps.benchmark.outputs.cmd-3 == ''
+        uses: andrewmusgrave/automatic-pull-request-review@0.0.2
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          event: APPROVE
+          body: 'LGTM'
+
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
           labels: |
