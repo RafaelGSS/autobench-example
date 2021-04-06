@@ -1,7 +1,7 @@
 {
   "name": "autobench-example",
   "version": "1.0.0",
-  "description": "",
+  "description": "Example of autobench usage with Github Actions",
   "main": "index.js",
   "dependencies": {
     "fastify": "^3.14.0"
@@ -17,7 +17,10 @@
     "bench:compare": "autobench compare",
     "bench:create": "autobench create"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "autobench",
+    "examples"
+  ],
+  "author": "RafaelGSS",
+  "license": "MIT"
 }
