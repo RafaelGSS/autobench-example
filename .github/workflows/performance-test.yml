@@ -42,7 +42,7 @@ jobs:
           command: |
             docker pull rafaelgss/public:autobench-example-$PR_NUMBER;
             docker rm autobench-example-$PR_NUMBER 2> /dev/null || true;
-            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER sh -c "npm run --silent bench-ci:compare > /dev/null && cat autobench-review.md 2> /dev/null";
+            docker run -e DEBUG=autobench:* --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER sh -c "npm run --silent bench-ci:compare > /dev/null && cat autobench-review.md 2> /dev/null";
 
       - name: Request changes
         if: steps.benchmark.outputs.cmd-3 != ''
