@@ -34,7 +34,7 @@ jobs:
         run: export IMAGE_NAME=rafaelgss/public:autobench-example-${{ steps.find-pull-request.outputs.number }}; docker push $IMAGE_NAME
 
       - name: Benchmark
-        uses: appleboy/ssh-action@master
+        uses: rafaelgss/github-action-ssh@master
         id: benchmark
         continue-on-error: true
         env:
@@ -44,18 +44,26 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           envs: PR_NUMBER
-          script: |
-            docker rm autobench-example-$PR_NUMBER || true
-            docker pull rafaelgss/public:autobench-example-$PR_NUMBER
-            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER echo "::set-output name=review::$(ls -la)";
+          command: |
+            docker pull rafaelgss/public:autobench-example-$PR_NUMBER;
+            docker rm autobench-example-$PR_NUMBER 2> /dev/null || true;
+            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER sh -c "npm run --silent bench-ci:compare > /dev/null && cat autobench-review.md 2> /dev/null";
 
-      - run: echo "::set-output name=example::test"
-        id: example
+      - name: Request changes
+        if: steps.benchmark.outputs.cmd-3 != ''
+        uses: andrewmusgrave/automatic-pull-request-review@0.0.2
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          event: REQUEST_CHANGES
+          body: ${{ steps.benchmark.outputs.cmd-3 }}
 
-      - run: echo "Pull Request ${review} ${example}"
-        env:
-          review: ${{join(steps.benchmark.outputs.*, '\n')}}
-          example: ${{join(steps.example.outputs.*, '\n')}}
+      - name: Approve changes
+        if: steps.benchmark.outputs.cmd-3 == ''
+        uses: andrewmusgrave/automatic-pull-request-review@0.0.2
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          event: APPROVE
+          body: 'LGTM'
 
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
