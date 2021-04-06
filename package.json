@@ -14,7 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "bench-ci:compare": "concurrently --kill-others \"npm start\" \"npm run bench:compare\"",
-    "bench:compare": "autobench compare",
+    "bench:compare": "autobench compare -s",
     "bench:create": "autobench create"
   },
   "keywords": [

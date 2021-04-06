@@ -10,11 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions-ecosystem/action-add-labels@v1
-        with:
-          labels: perf-in-progress
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Find Pull Request
         uses: juliangruber/find-pull-request-action@v1
         id: find-pull-request
@@ -68,6 +63,5 @@ jobs:
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
           labels: |
-            perf-in-progress
             performance
           github_token: ${{ secrets.GITHUB_TOKEN }}
