@@ -7,14 +7,10 @@ process.on('SIGTERM', () => {
 })
 
 async function slowPromise() {
-  const rand = 5000
+  const rand = 2000
   await new Promise((resolve) => setTimeout(resolve, rand))
   return true
 }
-
-fastify.get('/', (req, reply) => {
-  reply.send({ ok: true })
-})
 
 fastify.get('/slow', async (req, reply) => {
   const result = await slowPromise()
