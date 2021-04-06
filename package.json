@@ -1,20 +1,26 @@
 {
   "name": "autobench-example",
   "version": "1.0.0",
-  "description": "",
+  "description": "Example of autobench usage with Github Actions",
   "main": "index.js",
   "dependencies": {
     "fastify": "^3.14.0"
   },
   "devDependencies": {
-    "autobench": "^0.1.0"
+    "autobench": "^1.0.0",
+    "concurrently": "^6.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bench:compare": "autobench compare",
+    "start": "node index.js",
+    "bench-ci:compare": "concurrently --kill-others \"npm start\" \"npm run bench:compare\"",
+    "bench:compare": "autobench compare -s",
     "bench:create": "autobench create"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "autobench",
+    "examples"
+  ],
+  "author": "RafaelGSS",
+  "license": "MIT"
 }

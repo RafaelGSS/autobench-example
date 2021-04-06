@@ -1,0 +1,67 @@
+name: Performance Benchmark
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  benchmark:
+    if: ${{ github.event.label.name == 'performance' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Find Pull Request
+        uses: juliangruber/find-pull-request-action@v1
+        id: find-pull-request
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build container image
+        run: docker build -t rafaelgss/public:autobench-example-${{ steps.find-pull-request.outputs.number }} .
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: rafaelgss
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push image to Docker Hub
+        run: export IMAGE_NAME=rafaelgss/public:autobench-example-${{ steps.find-pull-request.outputs.number }}; docker push $IMAGE_NAME
+
+      - name: Benchmark
+        uses: rafaelgss/github-action-ssh@master
+        id: benchmark
+        continue-on-error: true
+        env:
+          PR_NUMBER: ${{ steps.find-pull-request.outputs.number }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          envs: PR_NUMBER
+          command: |
+            docker pull rafaelgss/public:autobench-example-$PR_NUMBER;
+            docker rm autobench-example-$PR_NUMBER 2> /dev/null || true;
+            docker run --name autobench-example-$PR_NUMBER -t rafaelgss/public:autobench-example-$PR_NUMBER sh -c "npm run --silent bench-ci:compare > /dev/null && cat autobench-review.md 2> /dev/null";
+
+      - name: Request changes
+        if: steps.benchmark.outputs.cmd-3 != ''
+        uses: andrewmusgrave/automatic-pull-request-review@0.0.2
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          event: REQUEST_CHANGES
+          body: ${{ steps.benchmark.outputs.cmd-3 }}
+
+      - name: Approve changes
+        if: steps.benchmark.outputs.cmd-3 == ''
+        uses: andrewmusgrave/automatic-pull-request-review@0.0.2
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          event: APPROVE
+          body: 'LGTM'
+
+      - uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: |
+            performance
+          github_token: ${{ secrets.GITHUB_TOKEN }}
