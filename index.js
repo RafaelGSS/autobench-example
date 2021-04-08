@@ -7,7 +7,7 @@ process.on('SIGTERM', () => {
 })
 
 async function slowPromise() {
-  const rand = 2000
+  const rand = 4000
   await new Promise((resolve) => setTimeout(resolve, rand))
   return true
 }
