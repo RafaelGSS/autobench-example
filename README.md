@@ -2,4 +2,7 @@
 
 Usage example of [`autobench`](https://github.com/RafaelGSS/autobench) to avoid merge PR with performance regressions.
 
-See the [pulls](https://github.com/RafaelGSS/autobench-example/pulls).
+Examples:
+
+- Pull Request with Performance Regression: https://github.com/RafaelGSS/autobench-example/pull/6
+- Pull Request with no Performance Regression: https://github.com/RafaelGSS/autobench-example/pull/7
